@@ -31,7 +31,7 @@ def load_audio(file_path):
     return audio, sr
 
 def load_all(directory):
-    
+
     """Load all audio files (.m4a, .wav, .mp3) from a given directory."""
     files = []
     for ext in ("*.m4a", "*.wav", "*.mp3"):
@@ -51,6 +51,7 @@ def load_all(directory):
         print(f"Loaded: {filename} | {sr} Hz | {len(y)/sr:.2f}s")
 
     return recordings
+
 def dominant_frequencies(recordings, start_ml=20, step_ml=10, min_freq=0, max_freq=3000):
     ''' There is a space for future description of the function '''
     frequencies = []
@@ -76,7 +77,6 @@ def dominant_frequencies(recordings, start_ml=20, step_ml=10, min_freq=0, max_fr
 
     return pd.DataFrame({'Beer': beer_names, 'frequencies': frequencies, 'volume': volume}), fft_data
 
-
 def plot_spectrum(fft_data, df, max_freq=3000):
     ''' There is a space for future description of the function '''
     beer_names = df['Beer'].unique()
@@ -92,7 +92,37 @@ def plot_spectrum(fft_data, df, max_freq=3000):
 
 
         plt.title(f"Frequency Spectrum - {beer}")
-        plt.xlabel("Częstotliwość [Hz]")
-        plt.ylabel("Amplituda")
+        plt.xlabel("Frequency [Hz]")
+        plt.ylabel("Amplitude")
         plt.legend(loc='upper right', fontsize='small')
         plt.show()
+
+def plot_with_curve(beer_name, volumes, frequencies):
+    ''' This function is designed to just prepare layout of the plot. plt.plot() needed after executing the function '''
+    volumes = np.array(volumes)
+    frequencies = np.array(frequencies)
+
+    err_vol = np.arange(1, len(volumes) + 1)
+    err_freq = 0
+
+    scatter_plot = plt.scatter(volumes, frequencies, label=f'{beer_name}')
+    current_color = scatter_plot.get_facecolor()[0]
+
+    plt.errorbar(
+        volumes, frequencies,
+        xerr=err_vol, yerr=err_freq,
+        fmt='none', ecolor=current_color, capsize=4, alpha=0.7
+    )
+
+    if len(volumes) > 2:
+        z = np.polyfit(volumes, frequencies, 2)
+        p = np.poly1d(z)
+        xp = np.linspace(volumes.min(), volumes.max(), 100)
+        plt.plot(xp, p(xp), linestyle='--', color=current_color)
+    elif len(volumes) > 1:
+        z = np.polyfit(volumes, frequencies, 1)
+        p = np.poly1d(z)
+        xp = np.linspace(volumes.min(), volumes.max(), 100)
+        plt.plot(xp, p(xp), linestyle='--', color=current_color)
+    else:
+        print(f"Not enough points in {beer_name} to fit a curve.")
