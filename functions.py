@@ -5,6 +5,21 @@ import glob
 from scipy import fft
 import pandas as pd
 import matplotlib.pyplot as plt
+from open_atmos_jupyter_utils import show_plot
+
+'''
+just to be sure every figure looks the same
+
+import matplotlib as mpl
+
+mpl.rcParams['font.family'] = 'Trebuchet MS'
+mpl.rcParams['axes.titlesize'] = 14
+mpl.rcParams['axes.labelsize'] = 12
+mpl.rcParams['xtick.labelsize'] = 10
+mpl.rcParams['ytick.labelsize'] = 10
+mpl.rcParams['legend.fontsize'] = 10
+mpl.rcParams['figure.dpi'] = 150
+'''
 
 def load_audio(file_path):
     ''' There is a space for future description of the function '''
@@ -19,10 +34,16 @@ def load_audio(file_path):
 
     container.close()
 
-    audio = np.concatenate(frames, axis=1)[0]  
-    
-    if channels == 2:
-        audio = audio[::2] 
+    audio = np.concatenate(frames, axis=1)
+
+    if channels == 2 and audio.shape[0] == 1:
+        # .wav - przeplatane stereo
+        audio = audio[0][::2]
+    elif channels == 2 and audio.shape[0] == 2:
+        # .m4a - prawdziwe stereo
+        audio = audio.mean(axis=0)
+    else:
+        audio = audio[0]
 
     audio = audio.astype(np.float32)
     if audio.max() > 1.0:
@@ -103,7 +124,7 @@ def plot_with_curve(beer_name, volumes, frequencies):
     frequencies = np.array(frequencies)
 
     err_vol = np.arange(1, len(volumes) + 1)
-    err_freq = 0
+    err_freq = 3
 
     scatter_plot = plt.scatter(volumes, frequencies, label=f'{beer_name}')
     current_color = scatter_plot.get_facecolor()[0]
