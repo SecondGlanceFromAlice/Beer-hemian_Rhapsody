@@ -3,7 +3,7 @@
 # Beer-hemian_Rhapsody
 
 This package started as a student project "Beer-hemian Rhapsody: Ale-iance of density and sound" 
-(pl: "Co w piwie piszczy? Fizykochemiczna analiza akustyczna piwa). Our goal was to check if liquid in a glass affects 
+(pl: "Co w piwie piszczy? Fizykochemiczna analiza akustyczna piwa"). Our goal was to check if liquid in a glass affects 
 the sound it makes (if you can't imagine it check out this [Youtube video](https://youtu.be/QdoTdG_VNV4?si=qiWBI7zX1te2O__g))
 
 Our functions include:
@@ -27,4 +27,4 @@ Beer-hemian_Rhapsody dependencies are:
 [scipy](https://scipy.org/),
 [pandas](https://pandas.pydata.org/),
 [matplotlib](https://matplotlib.org/),
-[IPython](https://ipython.org/),
+[IPython](https://ipython.org/)
