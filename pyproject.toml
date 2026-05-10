@@ -1,7 +1,7 @@
 [project]
-name = "Beer-hemian"
+name = "Beer-hemian_Rhapsody"
 dynamic = ["version"]
-description = ""
+description = "Analysis of sound files"
 authors = [
     {name = "Alicja Jagielska"},
     {name = "Szymon Książek"}
@@ -24,3 +24,9 @@ license-files = ["LICENSE.*"]
 [build-system]
 requires = ["hatchling >= 1.26"]
 build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["Beer-hemian_Rhapsody/src"]
+
+[tool.hatch.version]
+source = "vcs"
