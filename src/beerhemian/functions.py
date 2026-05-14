@@ -7,20 +7,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from open_atmos_jupyter_utils import show_plot
 
-'''
-just to be sure every figure looks the same
-
-import matplotlib as mpl
-
-mpl.rcParams['font.family'] = 'Trebuchet MS'
-mpl.rcParams['axes.titlesize'] = 14
-mpl.rcParams['axes.labelsize'] = 12
-mpl.rcParams['xtick.labelsize'] = 10
-mpl.rcParams['ytick.labelsize'] = 10
-mpl.rcParams['legend.fontsize'] = 10
-mpl.rcParams['figure.dpi'] = 150
-'''
-
 def load_audio(file_path):
     ''' There is a space for future description of the function '''
     container = av.open(file_path)
