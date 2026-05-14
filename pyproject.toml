@@ -13,6 +13,7 @@ dependencies = [
     "pandas",
     "matplotlib",
     "IPython",
+    "open-atmos-jupyter-utils"
 ]
 requires-python = ">= 3.10"
 readme = "README.md"
