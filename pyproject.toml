@@ -1,5 +1,5 @@
 [project]
-name = "Beer-hemian_Rhapsody"
+name = "Beer-hemian"
 dynamic = ["version"]
 description = "Analysis of sound files"
 authors = [
