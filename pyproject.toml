@@ -13,8 +13,6 @@ dependencies = [
     "pandas",
     "matplotlib",
     "IPython",
-    "os",
-    "glob"
 ]
 requires-python = ">= 3.13"
 readme = "README.md"
