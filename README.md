@@ -4,7 +4,7 @@
 
 This package started as a student project "Beer-hemian Rhapsody: Ale-iance of density and sound" 
 (pl: "Co w piwie piszczy? Fizykochemiczna analiza akustyczna piwa"). Our goal was to check if liquid in a glass affects 
-the sound it makes (if you can't imagine it check out this [Youtube video](https://youtu.be/QdoTdG_VNV4?si=qiWBI7zX1te2O__g))
+the sound it makes (if you can't imagine it check out this [Youtube video](https://youtu.be/QdoTdG_VNV4?si=qiWBI7zX1te2O__g) by GlassDuo - Glass Harp)
 
 Our functions include:
 
@@ -16,7 +16,30 @@ Our functions include:
 
 - **plot_spectrum(fft_data, df, max_freq=3000)**: using fft_data plots sound spectrum of the sound file
 
+- **plot_spectrum_multiple(fft_data, df, ax, max_freq=3000)**: analog to plot_spectrum, but produces single plot with all recordings
+
 - **plot_with_curve(beer_name, volumes, frequencies)**: Designed to just prepare layout of the plot. plt.plot() is needed after executing the function
+
+## Installation
+
+To make sure every dependency is connected properly please use the following command:
+
+``!pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ Beer-hemian``
+
+Then, in your code, please use ``import beerhemian`` to import the library
+
+
+## Our team
+
+Special thanks to our team from SKNF Bozon AGH (Student Research Club Bozon, AGH university of Krakow):
+- Alicja Jagielska
+- Wiktoria Seweryn
+- Krzysztof Kryk
+- Szymon Książek
+- Mikołaj Lewandowski
+- Wiktor Sala
+- Witold Rudziński
+
 
 
 ## Dependencies
