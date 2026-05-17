@@ -94,7 +94,7 @@ def plot_spectrum(fft_data, df, max_freq=3000):
 
         for (filename, freqs, fft_result), (_, row) in zip(beer_fft, beer_df.iterrows()):
             plot_mask = freqs < max_freq
-            plt.plot(freqs[plot_mask], fft_result[plot_mask], alpha=0.7, label=f"{row['volume']}ml")
+            plt.plot(freqs[plot_mask], fft_result[plot_mask], alpha=0.7, label=f"{row['mass']}ml")
 
 
         plt.title(f"Frequency Spectrum - {beer}")
