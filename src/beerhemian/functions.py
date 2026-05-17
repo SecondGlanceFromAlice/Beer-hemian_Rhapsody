@@ -55,19 +55,18 @@ def load_all(directory):
         y, sr = load_audio(file_path)
         filename = os.path.basename(file_path)
         recordings.append((filename, y, sr))
-        print(f"Loaded: {filename} | {sr} Hz | {len(y)/sr:.2f}s")
 
     return recordings
 
-def dominant_frequencies(recordings, start_ml=20, step_ml=10, min_freq=0, max_freq=3000):
+def dominant_frequencies(recordings, mass, mass_unc, min_freq=0, max_freq=3000):
     ''' There is a space for future description of the function '''
     frequencies = []
-    volume = []
+    masses = []
+    mass_uncs = []
     beer_names = []
     fft_data = []
-    ml = start_ml
 
-    for filename, y, sr in recordings:
+    for (filename, y, sr), m, dm in zip(recordings, mass, mass_unc):
         fft_result = np.abs(fft.rfft(y))
         freqs = fft.rfftfreq(len(y), 1 / sr)
 
@@ -77,12 +76,12 @@ def dominant_frequencies(recordings, start_ml=20, step_ml=10, min_freq=0, max_fr
         dominant_freq = freqs[actual_best_index]
 
         frequencies.append(dominant_freq)
-        volume.append(ml)
+        masses.append(m)
+        mass_uncs.append(dm)
         beer_names.append(filename.split('-')[0])
         fft_data.append((filename, freqs, fft_result))
-        ml += step_ml
 
-    return pd.DataFrame({'Beer': beer_names, 'frequencies': frequencies, 'volume': volume}), fft_data
+    return pd.DataFrame({'Beer': beer_names, 'frequencies': frequencies, 'mass': masses, 'um': mass_uncs}), fft_data
 
 def plot_spectrum(fft_data, df, max_freq=3000):
     ''' There is a space for future description of the function '''
@@ -104,32 +103,48 @@ def plot_spectrum(fft_data, df, max_freq=3000):
         plt.legend(loc='upper right', fontsize='small')
         plt.show()
 
-def plot_with_curve(beer_name, volumes, frequencies):
+
+def plot_spectrum_multiple(fft_data, df, ax, max_freq=3000):
+    ''' Plots FFT frequency spectrum for all recordings of a single beer on a given ax '''
+
+    beer_names = df['Beer'].unique()
+
+    for beer in beer_names:
+        beer_df = df[df['Beer'] == beer]
+        beer_fft = [(filename, freqs, fft_result) for (filename, freqs, fft_result) in fft_data if filename.split('-')[0] == beer]
+
+        for (filename, freqs, fft_result), (_, row) in zip(beer_fft, beer_df.iterrows()):
+            plot_mask = freqs < max_freq
+            ax.plot(freqs[plot_mask], fft_result[plot_mask], alpha=0.7, label=f"{row['mass']}g")
+
+        ax.set_title(f"Frequency Spectrum - {beer}")
+        ax.set_xlabel("Frequency [Hz]")
+        ax.set_ylabel("Amplitude")
+        ax.legend(loc='upper right', fontsize='small')
+
+def plot_with_curve(beer_name, mass, um, frequencies, err_freq = 3):
     ''' This function is designed to just prepare layout of the plot. plt.plot() needed after executing the function '''
-    volumes = np.array(volumes)
+    mass = np.array(mass)
     frequencies = np.array(frequencies)
 
-    err_vol = np.arange(1, len(volumes) + 1)
-    err_freq = 3
-
-    scatter_plot = plt.scatter(volumes, frequencies, label=f'{beer_name}')
+    scatter_plot = plt.scatter(mass, frequencies, label=f'{beer_name}')
     current_color = scatter_plot.get_facecolor()[0]
 
     plt.errorbar(
-        volumes, frequencies,
-        xerr=err_vol, yerr=err_freq,
+        mass, frequencies,
+        xerr=um, yerr=err_freq,
         fmt='none', ecolor=current_color, capsize=4, alpha=0.7
     )
 
-    if len(volumes) > 2:
-        z = np.polyfit(volumes, frequencies, 2)
+    if len(mass) > 2:
+        z = np.polyfit(mass, frequencies, 2)
         p = np.poly1d(z)
-        xp = np.linspace(volumes.min(), volumes.max(), 100)
+        xp = np.linspace(mass.min(), mass.max(), 100)
         plt.plot(xp, p(xp), linestyle='--', color=current_color)
-    elif len(volumes) > 1:
-        z = np.polyfit(volumes, frequencies, 1)
+    elif len(mass) > 1:
+        z = np.polyfit(mass, frequencies, 1)
         p = np.poly1d(z)
-        xp = np.linspace(volumes.min(), volumes.max(), 100)
+        xp = np.linspace(mass.min(), mass.max(), 100)
         plt.plot(xp, p(xp), linestyle='--', color=current_color)
     else:
         print(f"Not enough points in {beer_name} to fit a curve.")
